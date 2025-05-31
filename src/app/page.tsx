@@ -51,7 +51,7 @@ export default function Home() {
               <div className="text-center py-8">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Thank you!</h3>
-                <p className="text-gray-600">We&apos;ll be in touch soon to learn more about your business.</p>
+                <p className="text-gray-600">We will be in touch soon to learn more about your business.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -122,7 +122,7 @@ export default function Home() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">What&apos;s the biggest challenge you face with your staff or vendors?</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">What is the biggest challenge you face with your staff or vendors?</label>
                   <textarea
                     name="problems"
                     value={formData.problems}
@@ -158,7 +158,7 @@ export default function Home() {
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            We&apos;re building something for small business owners like you
+            We are building something for small business owners like you
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Help shape a new tool by sharing your experience running your business. 
@@ -167,7 +167,7 @@ export default function Home() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <a
-              href="https://calendly.com/hello-operantive"
+              href="https://calendly.com/your-link"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
@@ -186,7 +186,7 @@ export default function Home() {
         </div>
 
         <div className="bg-white rounded-lg p-8 mb-12 shadow-sm">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Who We're Talking To</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Who We Are Talking To</h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -213,9 +213,9 @@ export default function Home() {
         </div>
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Why We&apos;re Doing This</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Why We Are Doing This</h3>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            We&apos;re entrepreneurs building tools for business owners who work hard every day. 
+            We are entrepreneurs building tools for business owners who work hard every day. 
             Your insights help us create something that actually solves real problems.
           </p>
           
