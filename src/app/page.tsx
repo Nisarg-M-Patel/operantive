@@ -89,7 +89,7 @@ export default function Home() {
               <div className="text-center py-8">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Thank you!</h3>
-                <p className="text-gray-600">We'll review your responses and may reach out for a brief follow-up conversation.</p>
+                <p className="text-gray-600">We&apos;ll review your responses and may reach out for a brief follow-up conversation.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
