@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
 import { Calendar, MessageSquare, Users, CheckCircle, AlertCircle } from 'lucide-react';
@@ -80,17 +80,6 @@ export default function Home() {
   if (showSurvey) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <style jsx>{`
-          input[type="email"], input[type="text"], input[type="tel"], textarea {
-            color: #111827 !important;
-          }
-          input[type="email"]::-webkit-input-placeholder,
-          input[type="text"]::-webkit-input-placeholder,
-          input[type="tel"]::-webkit-input-placeholder,
-          textarea::-webkit-input-placeholder {
-            color: #9ca3af !important;
-          }
-        `}</style>
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-900">Operantive</h1>
@@ -143,7 +132,8 @@ export default function Home() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    style={{ color: '#111827' }}
                     required
                     disabled={submitting}
                   />
@@ -157,7 +147,8 @@ export default function Home() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    style={{ color: '#111827' }}
                     disabled={submitting}
                     placeholder="(555) 123-4567"
                   />
