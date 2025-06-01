@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 
+
 // Email configuration
 const transporter = nodemailer.createTransport({
   service: 'gmail',
