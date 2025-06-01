@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/api/submit-form/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
