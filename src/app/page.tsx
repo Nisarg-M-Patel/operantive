@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calendar, MessageSquare, Users, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, MessageSquare, Users, CheckCircle, AlertCircle, Phone } from 'lucide-react';
 
 export default function Home() {
   const [showSurvey, setShowSurvey] = useState(false);
@@ -12,12 +12,24 @@ export default function Home() {
     role: '',
     business: '',
     employees: '',
-    timeWaster: '',
-    problems: '',
+    // CD Questions transformed to yes/no
+    timeWasterExists: '',
+    problemsHappen: '',
+    thingsFallThrough: '',
+    coordinationHard: '',
     stressfulMoments: '',
-    lastWentWrong: '',
-    stepAway: '',
-    coordination: ''
+    lastMinuteChanges: '',
+    hardToTrack: '',
+    // Legal questions for owners
+    worriedAboutLegal: '',
+    hadLegalIssue: '',
+    hadLaborComplaint: '',
+    // General questions
+    usesWhatsApp: '',
+    hasLanguageBarriers: '',
+    wantsDocumentation: '',
+    biggestProblems: [] as string[],
+    interestedInCall: ''
   });
   const [emailError, setEmailError] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -77,6 +89,143 @@ export default function Home() {
     }
   };
 
+  const YesNoQuestion = ({ 
+    name, 
+    question, 
+    required = false 
+  }: { 
+    name: string; 
+    question: string; 
+    required?: boolean;
+  }) => (
+    <div>
+      <label className="block text-base font-semibold text-gray-900 mb-4">
+        {question} {required && <span className="text-red-500">*</span>}
+      </label>
+      <div className="flex gap-4">
+        <button
+          type="button"
+          onClick={() => setFormData({...formData, [name]: 'yes'})}
+          disabled={submitting}
+          className={`flex-1 p-4 rounded-lg border-2 transition-all font-medium ${
+            formData[name as keyof typeof formData] === 'yes' 
+              ? 'border-green-600 bg-green-50 text-green-900' 
+              : 'border-gray-300 hover:border-gray-400 text-gray-700'
+          } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          onClick={() => setFormData({...formData, [name]: 'no'})}
+          disabled={submitting}
+          className={`flex-1 p-4 rounded-lg border-2 transition-all font-medium ${
+            formData[name as keyof typeof formData] === 'no' 
+              ? 'border-red-600 bg-red-50 text-red-900' 
+              : 'border-gray-300 hover:border-gray-400 text-gray-700'
+          } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          No
+        </button>
+      </div>
+    </div>
+  );
+
+  const MultipleChoiceQuestion = ({ 
+    name, 
+    question, 
+    options, 
+    required = false 
+  }: { 
+    name: string; 
+    question: string; 
+    options: Array<{key: string, label: string}>; 
+    required?: boolean;
+  }) => (
+    <div>
+      <label className="block text-base font-semibold text-gray-900 mb-4">
+        {question} {required && <span className="text-red-500">*</span>}
+      </label>
+      <div className="space-y-2">
+        {options.map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => setFormData({...formData, [name]: option.key})}
+            disabled={submitting}
+            className={`w-full p-3 rounded-lg border-2 transition-all text-left font-medium ${
+              formData[name as keyof typeof formData] === option.key 
+                ? 'border-blue-600 bg-blue-50 text-blue-900' 
+                : 'border-gray-300 hover:border-gray-400 text-gray-700'
+            } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const MultipleSelectQuestion = ({ 
+    name, 
+    question, 
+    options, 
+    required = false 
+  }: { 
+    name: string; 
+    question: string; 
+    options: Array<{key: string, label: string}>; 
+    required?: boolean;
+  }) => {
+    const currentValues = formData[name as keyof typeof formData] as string[] || [];
+    
+    const toggleOption = (optionKey: string) => {
+      const newValues = currentValues.includes(optionKey)
+        ? currentValues.filter(v => v !== optionKey)
+        : [...currentValues, optionKey];
+      setFormData({...formData, [name]: newValues});
+    };
+
+    return (
+      <div>
+        <label className="block text-base font-semibold text-gray-900 mb-4">
+          {question} {required && <span className="text-red-500">*</span>}
+          <span className="text-sm font-normal text-gray-600 block mt-1">(Select all that apply)</span>
+        </label>
+        <div className="space-y-2">
+          {options.map((option) => (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => toggleOption(option.key)}
+              disabled={submitting}
+              className={`w-full p-3 rounded-lg border-2 transition-all text-left font-medium ${
+                currentValues.includes(option.key)
+                  ? 'border-blue-600 bg-blue-50 text-blue-900' 
+                  : 'border-gray-300 hover:border-gray-400 text-gray-700'
+              } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <div className="flex items-center">
+                <div className={`w-5 h-5 rounded border-2 mr-3 flex items-center justify-center ${
+                  currentValues.includes(option.key)
+                    ? 'border-blue-600 bg-blue-600'
+                    : 'border-gray-300'
+                }`}>
+                  {currentValues.includes(option.key) && (
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+                {option.label}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   if (showSurvey) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -92,19 +241,35 @@ export default function Home() {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-4 py-12">
+        <main className="max-w-4xl mx-auto px-4 py-12">
           <div className="bg-white rounded-lg p-8 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Discovery Survey</h2>
-            <p className="text-gray-600 mb-8">Help us understand the real challenges in small business operations. Your insights shape what we build.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Survey</h2>
+            <p className="text-gray-600 mb-8">Help us understand small business challenges. Takes 2 minutes!</p>
             
             {submitted ? (
               <div className="text-center py-8">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Thank you!</h3>
-                <p className="text-gray-600">We&apos;ll review your responses and may reach out for a brief follow-up conversation.</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Thank you!</h3>
+                <p className="text-gray-600 mb-6">Your insights help us build something useful for small businesses.</p>
+                
+                {formData.interestedInCall === 'yes' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                    <h4 className="font-semibold text-blue-900 mb-3">Great! Let's chat.</h4>
+                    <p className="text-blue-800 mb-4">We'll reach out to schedule a quick call to learn more about your specific challenges.</p>
+                    <a
+                      href="https://calendly.com/hello-operantive"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    >
+                      <Calendar className="h-4 w-4" />
+                      Or schedule now
+                    </a>
+                  </div>
+                )}
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-8">
                 {submitError && (
                   <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-start">
                     <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" />
@@ -112,50 +277,57 @@ export default function Home() {
                   </div>
                 )}
                 
-                <div>
-                  <label className="block text-base font-semibold text-gray-900 mb-2">Your name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    required
-                    disabled={submitting}
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    style={{ color: '#111827' }}
-                    required
-                    disabled={submitting}
-                  />
-                  {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                {/* Contact Info */}
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Info</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">Name *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                        required
+                        disabled={submitting}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">Email *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                        required
+                        disabled={submitting}
+                      />
+                      {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">Phone (optional)</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                      disabled={submitting}
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
                 </div>
 
+                {/* Role Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Phone (optional)</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    style={{ color: '#111827' }}
-                    disabled={submitting}
-                    placeholder="(555) 123-4567"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-base font-semibold text-gray-900 mb-4">What best describes you?</label>
+                  <label className="block text-base font-semibold text-gray-900 mb-4">
+                    What best describes you? *
+                  </label>
                   <div className="grid grid-cols-2 gap-4">
                     <button
                       type="button"
@@ -192,206 +364,185 @@ export default function Home() {
                   </div>
                 </div>
 
-                {formData.role === 'owner' && (
-                  <>
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-4">What type of business do you run?</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[
-                          { key: 'Gas Station/Convenience', title: 'Gas Station', subtitle: 'Convenience Store' },
-                          { key: 'Restaurant/Food Service', title: 'Restaurant', subtitle: 'Food Service' },
-                          { key: 'Retail/Shopping', title: 'Retail Store', subtitle: 'Shopping' },
-                          { key: 'Auto/Service', title: 'Auto Repair', subtitle: 'Service Business' },
-                          { key: 'Grocery/Market', title: 'Grocery', subtitle: 'Market' },
-                          { key: 'Other', title: 'Other', subtitle: 'Small Business' }
-                        ].map((option) => (
-                          <button
-                            key={option.key}
-                            type="button"
-                            onClick={() => setFormData({...formData, business: option.key})}
-                            disabled={submitting}
-                            className={`p-4 rounded-lg border-2 transition-all text-center ${
-                              formData.business === option.key 
-                                ? 'border-blue-600 bg-blue-50 text-blue-900' 
-                                : 'border-gray-300 hover:border-gray-400 text-gray-700'
-                            } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          >
-                            <div className="font-semibold">{option.title}</div>
-                            <div className="text-sm">{option.subtitle}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-4">How many employees do you have?</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[
-                          { key: '1-5', title: '1-5', subtitle: 'employees' },
-                          { key: '6-10', title: '6-10', subtitle: 'employees' },
-                          { key: '11-20', title: '11-20', subtitle: 'employees' },
-                          { key: '21+', title: '21+', subtitle: 'employees' }
-                        ].map((option) => (
-                          <button
-                            key={option.key}
-                            type="button"
-                            onClick={() => setFormData({...formData, employees: option.key})}
-                            disabled={submitting}
-                            className={`p-4 rounded-lg border-2 transition-all text-center ${
-                              formData.employees === option.key 
-                                ? 'border-blue-600 bg-blue-50 text-blue-900' 
-                                : 'border-gray-300 hover:border-gray-400 text-gray-700'
-                            } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          >
-                            <div className="font-semibold">{option.title}</div>
-                            <div className="text-sm">{option.subtitle}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">What part of running your business takes up more time than it should? (Walk us through a typical example)</label>
-                      <textarea
-                        name="timeWaster"
-                        value={formData.timeWaster}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">Tell us about the last time something went wrong in your business - what led up to it and how did you resolve it?</label>
-                      <textarea
-                        name="lastWentWrong"
-                        value={formData.lastWentWrong}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">When you step away from your business for a day, what falls through the cracks and who handles things?</label>
-                      <textarea
-                        name="stepAway"
-                        value={formData.stepAway}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">What gets in the way of smooth coordination with your people? (Do you rely on memory, notes, apps, etc.)</label>
-                      <textarea
-                        name="coordination"
-                        value={formData.coordination}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
-                  </>
+                {/* Business Type */}
+                {formData.role && (
+                  <MultipleChoiceQuestion
+                    name="business"
+                    question={`What type of business do you ${formData.role === 'owner' ? 'run' : 'work for'}?`}
+                    required
+                    options={[
+                      { key: 'gas-station', label: '⛽ Gas Station / Convenience Store' },
+                      { key: 'restaurant', label: '🍕 Restaurant / Food Service' },
+                      { key: 'retail', label: '🛍️ Retail Store / Shopping' },
+                      { key: 'auto-service', label: '🔧 Auto Repair / Service Business' },
+                      { key: 'grocery', label: '🛒 Grocery / Market' },
+                      { key: 'other', label: '🏢 Other Small Business' }
+                    ]}
+                  />
                 )}
 
-                {formData.role === 'employee' && (
-                  <>
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-4">What type of business do you work for?</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[
-                          { key: 'Gas Station/Convenience', title: 'Gas Station', subtitle: 'Convenience Store' },
-                          { key: 'Restaurant/Food Service', title: 'Restaurant', subtitle: 'Food Service' },
-                          { key: 'Retail/Shopping', title: 'Retail Store', subtitle: 'Shopping' },
-                          { key: 'Auto/Service', title: 'Auto Repair', subtitle: 'Service Business' },
-                          { key: 'Grocery/Market', title: 'Grocery', subtitle: 'Market' },
-                          { key: 'Other', title: 'Other', subtitle: 'Small Business' }
-                        ].map((option) => (
-                          <button
-                            key={option.key}
-                            type="button"
-                            onClick={() => setFormData({...formData, business: option.key})}
-                            disabled={submitting}
-                            className={`p-4 rounded-lg border-2 transition-all text-center ${
-                              formData.business === option.key 
-                                ? 'border-blue-600 bg-blue-50 text-blue-900' 
-                                : 'border-gray-300 hover:border-gray-400 text-gray-700'
-                            } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          >
-                            <div className="font-semibold">{option.title}</div>
-                            <div className="text-sm">{option.subtitle}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                {/* Employee Count (Owner only) */}
+                {formData.role === 'owner' && (
+                  <MultipleChoiceQuestion
+                    name="employees"
+                    question="How many employees do you have?"
+                    required
+                    options={[
+                      { key: '1-5', label: '1-5 employees' },
+                      { key: '6-10', label: '6-10 employees' },
+                      { key: '11-20', label: '11-20 employees' },
+                      { key: '21+', label: '21+ employees' }
+                    ]}
+                  />
+                )}
 
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">When do you feel most stressed or confused at work? (Give us a specific example)</label>
-                      <textarea
-                        name="stressfulMoments"
-                        value={formData.stressfulMoments}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
+                {/* Customer Discovery Questions */}
+                {formData.role && (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-semibold text-gray-900 border-t pt-6">Business Operations</h3>
+                    
+                    {formData.role === 'owner' ? (
+                      <>
+                        <YesNoQuestion
+                          name="timeWasterExists"
+                          question="Is there any part of running your business that takes up more time than it should?"
+                          required
+                        />
 
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">How would a new person joining your team know what to do? (What would you tell them first?)</label>
-                      <textarea
-                        name="coordination"
-                        value={formData.coordination}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
+                        <YesNoQuestion
+                          name="problemsHappen"
+                          question="In the last 6 months, has something gone wrong in your business that could have been prevented with better communication or coordination?"
+                          required
+                        />
 
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">Tell us about a time your workday changed last minute - how did you find out and how often does this happen?</label>
-                      <textarea
-                        name="lastWentWrong"
-                        value={formData.lastWentWrong}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
+                        <YesNoQuestion
+                          name="thingsFallThrough"
+                          question="When you step away from your business for a day, do important things sometimes fall through the cracks?"
+                          required
+                        />
 
-                    <div>
-                      <label className="block text-base font-semibold text-gray-900 mb-2">What part of your job is hardest to keep track of? (Are you expected to remember everything yourself?)</label>
-                      <textarea
-                        name="problems"
-                        value={formData.problems}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
-                  </>
+                        <YesNoQuestion
+                          name="coordinationHard"
+                          question="Do you find it challenging to coordinate people and tasks smoothly in your business?"
+                          required
+                        />
+
+                        {/* Legal Questions for Owners */}
+                        <h4 className="text-md font-semibold text-gray-900 mt-8 mb-4">Legal & Compliance</h4>
+                        
+                        <YesNoQuestion
+                          name="worriedAboutLegal"
+                          question="Have you ever worried about legal trouble due to how something was communicated or documented?"
+                          required
+                        />
+
+                        <YesNoQuestion
+                          name="hadLegalIssue"
+                          question="Have you ever had a legal issue with an employee or a close call?"
+                          required
+                        />
+
+                        <YesNoQuestion
+                          name="hadLaborComplaint"
+                          question="Have you ever had to deal with a labor law, workplace, or documentation issue/complaint?"
+                          required
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <YesNoQuestion
+                          name="stressfulMoments"
+                          question="Do you sometimes feel stressed or confused at work because instructions or expectations aren't clear?"
+                          required
+                        />
+
+                        <YesNoQuestion
+                          name="lastMinuteChanges"
+                          question="Do you experience last-minute changes to your schedule or responsibilities at work?"
+                          required
+                        />
+
+                        <YesNoQuestion
+                          name="hardToTrack"
+                          question="Is there any part of your job that's hard to keep track of or remember without written reminders?"
+                          required
+                        />
+                      </>
+                    )}
+
+                    <YesNoQuestion
+                      name="usesWhatsApp"
+                      question="Do you currently use WhatsApp, text messages, or calls for work communication?"
+                      required
+                    />
+
+                    <YesNoQuestion
+                      name="hasLanguageBarriers"
+                      question="Do language differences ever cause communication problems at work?"
+                    />
+
+                    <YesNoQuestion
+                      name="wantsDocumentation"
+                      question={formData.role === 'owner'
+                        ? "Would you want better documentation of work conversations and decisions for legal protection?"
+                        : "Would you prefer to have clearer, written instructions rather than just verbal communication?"
+                      }
+                      required
+                    />
+
+                    <MultipleSelectQuestion
+                      name="biggestProblems"
+                      question={formData.role === 'owner'
+                        ? "What are the biggest challenges in your business right now?"
+                        : "What are the biggest challenges you face at work?"
+                      }
+                      required
+                      options={formData.role === 'owner' ? [
+                        { key: 'staff-scheduling', label: '📅 Staff scheduling and attendance' },
+                        { key: 'communication', label: '💬 Communication between people' },
+                        { key: 'task-management', label: '📋 Making sure tasks get completed' },
+                        { key: 'vendor-coordination', label: '🚛 Vendor and supplier coordination' },
+                        { key: 'customer-complaints', label: '🚨 Customer complaints and problems' },
+                        { key: 'paperwork', label: '📄 Paperwork and record keeping' },
+                        { key: 'training', label: '🎓 Training new employees' },
+                        { key: 'quality-control', label: '✅ Quality control and standards' },
+                        { key: 'inventory', label: '📦 Inventory management' },
+                        { key: 'cash-flow', label: '💰 Cash flow and payments' },
+                        { key: 'regulations', label: '⚖️ Regulations and compliance' },
+                        { key: 'technology', label: '💻 Technology and systems' },
+                        { key: 'other-owner', label: '🔧 Other (please specify in follow-up)' }
+                      ] : [
+                        { key: 'unclear-instructions', label: '❓ Unclear instructions or expectations' },
+                        { key: 'schedule-changes', label: '📅 Last-minute schedule changes' },
+                        { key: 'poor-communication', label: '💬 Poor communication from management' },
+                        { key: 'insufficient-training', label: '🎓 Not enough training for my role' },
+                        { key: 'too-many-tasks', label: '📋 Too many tasks to keep track of' },
+                        { key: 'language-barriers', label: '🌐 Language or communication barriers' },
+                        { key: 'inconsistent-policies', label: '📋 Inconsistent rules or policies' },
+                        { key: 'no-feedback', label: '🔄 Not getting feedback on my work' },
+                        { key: 'workplace-stress', label: '😰 High stress or pressure at work' },
+                        { key: 'equipment-issues', label: '🔧 Equipment or technology problems' },
+                        { key: 'unfair-treatment', label: '⚖️ Feeling treated unfairly' },
+                        { key: 'work-life-balance', label: '⚖️ Work-life balance issues' },
+                        { key: 'other-employee', label: '🔧 Other (please specify in follow-up)' }
+                      ]}
+                    />
+                  </div>
+                )}
+
+                {/* Call Interest */}
+                {formData.role && (
+                  <div className="bg-blue-50 p-6 rounded-lg">
+                    <YesNoQuestion
+                      name="interestedInCall"
+                      question="Would you be interested in a 15-minute call to share more about your challenges? (No sales pitch - just learning)"
+                    />
+                  </div>
                 )}
 
                 <button
                   type="submit"
-                  className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
+                  className={`w-full py-4 px-6 rounded-lg transition-colors font-medium text-lg ${
                     !formData.role || emailError || submitting
                       ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
                       : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -419,35 +570,37 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            We are building something for small business owners like you
+            We're building something for small business owners like you
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Help shape a new tool by sharing your experience running your business. 
-            15 minutes, no sales pitch.
+            Help shape a new tool by sharing your experience. 
+            2-minute survey or 15-minute chat - your choice.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <button
+              onClick={() => setShowSurvey(true)}
+              className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
+            >
+              <MessageSquare className="h-5 w-5" />
+              Quick 2-min survey
+            </button>
             <a
               href="https://calendly.com/hello-operantive"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
+              className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg hover:bg-blue-50 transition-colors font-medium flex items-center gap-2"
             >
               <Calendar className="h-5 w-5" />
               Schedule a 15-min chat
             </a>
-            <button
-              onClick={() => setShowSurvey(true)}
-              className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg hover:bg-blue-50 transition-colors font-medium flex items-center gap-2"
-            >
-              <MessageSquare className="h-5 w-5" />
-              Take discovery survey
-            </button>
           </div>
+          
+          <p className="text-sm text-gray-500">No sales pitch • All conversations confidential</p>
         </div>
 
         <div className="bg-white rounded-lg p-8 mb-12 shadow-sm">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Who We Are Talking To</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Who We're Talking To</h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -468,15 +621,15 @@ export default function Home() {
                 <CheckCircle className="h-8 w-8 text-purple-600" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Your Experience Matters</h4>
-              <p className="text-gray-600">All conversations are confidential</p>
+              <p className="text-gray-600">Help us build something useful</p>
             </div>
           </div>
         </div>
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Why We Are Doing This</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Why We're Doing This</h3>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            We are entrepreneurs building tools for business owners who work hard every day. 
+            We're entrepreneurs building tools for business owners who work hard every day. 
             Your insights help us create something that actually solves real problems.
           </p>
         </div>
