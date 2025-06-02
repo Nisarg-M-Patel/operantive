@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calendar, MessageSquare, Users, CheckCircle, AlertCircle, Phone } from 'lucide-react';
+import { Calendar, MessageSquare, Users, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function Home() {
   const [showSurvey, setShowSurvey] = useState(false);
@@ -83,7 +83,7 @@ export default function Home() {
       setSubmitted(true);
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitError('There was an error submitting your response. Please try again or email us directly at hello@operantive.com');
+                            setSubmitError('There was an error submitting your response. Please try again or email us directly at hello@operantive.com');
     } finally {
       setSubmitting(false);
     }
@@ -255,7 +255,7 @@ export default function Home() {
                 {formData.interestedInCall === 'yes' && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                     <h4 className="font-semibold text-blue-900 mb-3">Great! Let's chat.</h4>
-                    <p className="text-blue-800 mb-4">We'll reach out to schedule a quick call to learn more about your specific challenges.</p>
+                    <p className="text-blue-800 mb-4">We&apos;ll reach out to schedule a quick call to learn more about your specific challenges.</p>
                     <a
                       href="https://calendly.com/hello-operantive"
                       target="_blank"
@@ -570,7 +570,7 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            We're building something for small business owners like you
+            A smarter platform is on the way — made for businesses like yours.
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Help shape a new tool by sharing your experience. 
@@ -600,7 +600,7 @@ export default function Home() {
         </div>
 
         <div className="bg-white rounded-lg p-8 mb-12 shadow-sm">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Who We're Talking To</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Who We&apos;re Talking To</h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -627,9 +627,9 @@ export default function Home() {
         </div>
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Why We're Doing This</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Why We&apos;re Doing This</h3>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            We're entrepreneurs building tools for business owners who work hard every day. 
+            We&apos;re entrepreneurs building tools for business owners who work hard every day. 
             Your insights help us create something that actually solves real problems.
           </p>
         </div>
