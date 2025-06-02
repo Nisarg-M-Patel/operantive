@@ -244,7 +244,7 @@ export default function Home() {
         <main className="max-w-4xl mx-auto px-4 py-12">
           <div className="bg-white rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Survey</h2>
-            <p className="text-gray-600 mb-8">Help us understand small business challenges. Takes 2 minutes!</p>
+                            <p className="text-gray-600 mb-8">Help us understand small business challenges. Takes 2 minutes!</p>
             
             {submitted ? (
               <div className="text-center py-8">
@@ -254,7 +254,7 @@ export default function Home() {
                 
                 {formData.interestedInCall === 'yes' && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                    <h4 className="font-semibold text-blue-900 mb-3">Great! Let's chat.</h4>
+                    <h4 className="font-semibold text-blue-900 mb-3">Great! Let us chat.</h4>
                     <p className="text-blue-800 mb-4">We will reach out to schedule a quick call to learn more about your specific challenges.</p>
                     <a
                       href="https://calendly.com/hello-operantive"
